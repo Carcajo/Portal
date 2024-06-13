@@ -23,11 +23,14 @@ dsn = (
 )
 
 
-try:
-    conn = ibm_db.connect(dsn, "", "")
-    print("Connected to database")
-except:
-    print("Unable to connect to the database")
+def get_db_connection():
+    try:
+        conn = ibm_db.connect(dsn, "", "")
+        print("Connected to database")
+        return conn
+    except Exception as e:
+        print("Unable to connect to the database:", e)
+        return None
 
 
 @app.route('/')
@@ -37,22 +40,32 @@ def index():
 
 @app.route('/requests', methods=['GET'])
 def get_requests():
-    sql = "SELECT * FROM requests"
-    stmt = ibm_db.exec_immediate(conn, sql)
-    requests = []
-    row = ibm_db.fetch_assoc(stmt)
-    while row:
-        requests.append(row)
+    conn = get_db_connection()
+    if conn:
+        sql = "SELECT * FROM requests"  
+        stmt = ibm_db.exec_immediate(conn, sql)
+        requests = []
         row = ibm_db.fetch_assoc(stmt)
-    return jsonify(requests)
+        while row:
+            requests.append(row)
+            row = ibm_db.fetch_assoc(stmt)
+        ibm_db.close(conn)
+        return jsonify(requests)
+    else:
+        return jsonify({"error": "Unable to connect to the database"}), 500
 
 
 @app.route('/requests', methods=['POST'])
 def create_request():
-    new_request = request.json
-    sql = f"INSERT INTO requests (id, status, description, activity) VALUES ('{new_request['id']}', '{new_request['status']}', '{new_request['description']}', '{new_request['activity']}')"
-    ibm_db.exec_immediate(conn, sql)
-    return jsonify(new_request), 201
+    conn = get_db_connection()
+    if conn:
+        new_request = request.json
+        sql = f"INSERT INTO requests (id, status, description, activity) VALUES ('{new_request['id']}', '{new_request['status']}', '{new_request['description']}', '{new_request['activity']}')"
+        ibm_db.exec_immediate(conn, sql)
+        ibm_db.close(conn)
+        return jsonify(new_request), 201
+    else:
+        return jsonify({"error": "Unable to connect to the database"}), 500
 
 
 if __name__ == '__main__':
