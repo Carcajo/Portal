@@ -33,7 +33,7 @@ def create_table_if_not_exists():
 
 
 def parse_user_info(data):
-    user_data = data
+    user_data = data[0]
 
     status = user_data[0].strip()
     role = user_data[1].strip()
