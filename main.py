@@ -32,6 +32,19 @@ def create_table_if_not_exists():
         connection.commit()
 
 
+def parse_user_info(data):
+    user_data = data
+
+    status = user_data[0].strip()
+    role = user_data[1].strip()
+
+    user_info = {
+        "status": status,
+        "role": role
+    }
+
+    return user_info
+  
 def authenticate_user(username, password):
     cursor = connection.cursor()
     query = "SELECT role FROM users WHERE username = ? AND password = ?"
