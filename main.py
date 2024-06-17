@@ -63,13 +63,12 @@ def login():
 
     role = authenticate_user(username, password)
 
-    if role == 'admin':
-        return jsonify({'status': 'success', 'role': 'admin'})
-    elif role == 'user':
+    if role == 'user':
         return jsonify({'status': 'success', 'role': 'user'})
+    elif role == 'admin':
+        return jsonify({'status': 'success', 'role': 'admin'})
     else:
         return jsonify({'status': 'error', 'message': 'Invalid credentials or user is blocked'}), 401
-
 
 @app.route('/queries', methods=['GET'])
 def get_queries():
