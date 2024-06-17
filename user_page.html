@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Мои запросы</title>
+  <link rel="stylesheet" href="../static/styles/user_page2.css">
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Мои запросы</h1>
+    <img src="../static/images/logo.png" class="logo" alt="Логотип">
+  </header>
+  <main>
+    <div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Информация о запросе</h2>
+    <p><strong>ID запроса:</strong> <span id="modalRequestId"></span></p>
+    <p><strong>Статус:</strong> <span id="modalRequestStatus"></span></p>
+    <p><strong>Описание:</strong> <span id="modalRequestDescription"></span></p>
+    <p><strong>Активность:</strong> <span id="modalRequestActivity"></span></p>
+    <p><strong>SQL запрос:</strong></p>
+    <pre id="modalRequestSQL"></pre>
+  </div>
+      </div>
+
+  <div id="runModal" class="runmodal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Результаты выполнения запроса</h2>
+    <p><strong>ID запроса:</strong> <span id="runModalRequestId"></span></p>
+    <p><strong>Описание:</strong> <span id="runModalDescription"></span></p>
+    <p><strong>Результаты выполнения:</strong><span>Что-то есть</span></p>
+    <button id="downloadCSV">Скачать CSV</button>
+  </div>
+</div>
+</div>
+    <table>
+      <thead>
+        <tr>
+          <th id="idHeader">ID запроса</th>
+          <th id="statusHeader">Статус</th>
+          <th id="descriptionHeader">Описание</th>
+          <th id="activityHeader">Активность</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ABC123456</td>
+          <td class="status">in review</td>
+          <td>Запрос остатков по пакетам</td>
+          <td>2024-04-04</td>
+          <td><button class="info">Инфо</button></td>
+          <td><button class="launch">Запуск</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button id="prevPage">&lt;</button>
+      <button class="page active">1</button>
+      <button class="page">2</button>
+      <button class="page">3</button>
+      <button class="page">4</button>
+      <button class="page">5</button>
+      <span>...</span>
+      <button class="page">12</button>
+      <button id="nextPage">&gt;</button>
+    </div>
+    <button class="create" id="createRequest">Создать</button>
+  </main>
+  <script src="../static/js/user_page.js"></script>
+</body>
+</html>
