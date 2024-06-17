@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const runModalRequestId = document.getElementById('runModalRequestId');
   const runModalDescription = document.getElementById('runModalDescription');
   const runModalResults = document.getElementById('runModalResults');
-
   const reviewModal = document.getElementById('reviewModal');
   const reviewRequestId = document.getElementById('reviewRequestId');
   const reviewRequestStatus = document.getElementById('reviewRequestStatus');
@@ -26,20 +25,18 @@ document.addEventListener('DOMContentLoaded', function() {
   const reviewRequestName = document.getElementById('reviewRequestName');
   const reviewRequestQuery = document.getElementById('reviewRequestQuery');
   const reviewRequestComment = document.getElementById('reviewRequestComment');
-
+  const downloadCSVButton = document.getElementById('downloadCSV');
   let currentPage = 1;
   const itemsPerPage = 5;
   let requestsData = [];
 
   function generateID() {
     const timestamp = new Date().getTime();
-    const id = 'STL' + timestamp;
-    return id;
+    return 'STL' + timestamp;
   }
 
   function displayRequests(pageNumber) {
     tableBody.innerHTML = '';
-
     const startIndex = (pageNumber - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const displayData = requestsData.slice(startIndex, endIndex);
@@ -116,19 +113,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const approveButton = reviewModal.querySelector('.approve');
     const rejectButton = reviewModal.querySelector('.reject');
 
-    approveButton.addEventListener('click', function() {
+    approveButton.removeEventListener('click', approveReview);
+    rejectButton.removeEventListener('click', rejectReview);
+
+    function approveReview() {
       request.status = 'approved';
       reviewRequestStatus.textContent = 'approved';
       closeReviewModal();
       updateTable();
-    });
+    }
 
-    rejectButton.addEventListener('click', function() {
+    function rejectReview() {
       request.status = 'rejected';
       reviewRequestStatus.textContent = 'rejected';
       closeReviewModal();
       updateTable();
-    });
+    }
+
+     approveButton.addEventListener('click', approveReview);
+    rejectButton.addEventListener('click', rejectReview);
   }
 
   function closeReviewModal() {
@@ -174,30 +177,29 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   createRequestButton.addEventListener('click', async function() {
-  const newRequest = {
-    id: generateID(),
-    status: prompt('Введите статус запроса'),
-    description: prompt('Введите описание запроса'),
-    activity: new Date().toISOString().slice(0, 10),
-  };
+    const newRequest = {
+      id: generateID(),
+      status: prompt('Введите статус запроса'),
+      description: prompt('Введите описание запроса'),
+      activity: new Date().toISOString().slice(0, 10),
+    };
 
-  const response = await fetch('/requests', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newRequest),
+    const response = await fetch('/requests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newRequest),
+    });
+
+    if (response.ok) {
+      const createdRequest = await response.json();
+      requestsData.push(createdRequest);
+      updateTable();
+    } else {
+      alert('Ошибка при создании запроса');
+    }
   });
-
-  if (response.ok) {
-    const createdRequest = await response.json();
-    requestsData.push(createdRequest);
-    updateTable();
-  } else {
-    alert('Ошибка при создании запроса');
-  }
-});
-
 
   function displayModal(request) {
     modal.style.display = 'block';
@@ -213,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     runModalRequestId.textContent = request.id;
     runModalDescription.textContent = request.description;
     const downloadCSVButton = document.getElementById('downloadCSV');
+    downloadCSVButton.removeEventListener('click', downloadCSV);
     downloadCSVButton.addEventListener('click', downloadCSV);
   }
 

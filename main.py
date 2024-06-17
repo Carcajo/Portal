@@ -1,72 +1,133 @@
-from flask import Flask, render_template, jsonify, request
-import ibm_db
+from flask import Flask, request, jsonify, render_template
+from dotenv import load_dotenv
+import pyodbc
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 
-
-dsn_hostname = "your_host"
-dsn_uid = "your_username"
-dsn_pwd = "your_password"
-dsn_driver = "{IBM DB2 ODBC DRIVER}"
-dsn_database = "your_db_name"
-dsn_port = "your_port"
-dsn_protocol = "TCPIP"
-
-dsn = (
-    f"DRIVER={dsn_driver};"
-    f"DATABASE={dsn_database};"
-    f"HOSTNAME={dsn_hostname};"
-    f"PORT={dsn_port};"
-    f"PROTOCOL={dsn_protocol};"
-    f"UID={dsn_uid};"
-    f"PWD={dsn_pwd};"
-)
+connection = pyodbc.connect(driver=os.getenv("DRIVER"),
+                            server=os.getenv("SERVER"),
+                            uid=os.getenv("UID"),
+                            pwd=os.getenv("PWD"))
 
 
-def get_db_connection():
-    try:
-        conn = ibm_db.connect(dsn, "", "")
-        print("Connected to database")
-        return conn
-    except Exception as e:
-        print("Unable to connect to the database:", e)
+def check_table_existence():
+    cursor = connection.cursor()
+    tables = cursor.tables(table='requests', tableType='TABLE').fetchall()
+    cursor.close()
+    return len(tables) > 0
+
+
+def create_table_if_not_exists():
+    if not check_table_existence():
+        cursor = connection.cursor()
+        cursor.execute('''CREATE TABLE requests (
+                            id VARCHAR(255) PRIMARY KEY,
+                            status VARCHAR(255),
+                            description VARCHAR(255),
+                            activity VARCHAR(255))''')
+        cursor.close()
+        connection.commit()
+
+
+def authenticate_user(username, password):
+    cursor = connection.cursor()
+    query = "SELECT role FROM users WHERE username = ? AND password = ?"
+    cursor.execute(query, (username, password))
+    user = cursor.fetchone()
+    cursor.close()
+    if user:
+        return user[0]
+    else:
         return None
 
 
 @app.route('/')
 def index():
-    return render_template('admin_page_test.html')
+    return render_template('templates/autorization_test.html')
 
 
-@app.route('/requests', methods=['GET'])
-def get_requests():
-    conn = get_db_connection()
-    if conn:
-        sql = "SELECT * FROM requests"  
-        stmt = ibm_db.exec_immediate(conn, sql)
-        requests = []
-        row = ibm_db.fetch_assoc(stmt)
-        while row:
-            requests.append(row)
-            row = ibm_db.fetch_assoc(stmt)
-        ibm_db.close(conn)
-        return jsonify(requests)
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'status': 'error', 'message': 'Missing username or password'}), 400
+
+    role = authenticate_user(username, password)
+
+    if role == 'admin':
+        return jsonify({'status': 'success', 'role': 'admin'})
+    elif role == 'user':
+        return jsonify({'status': 'success', 'role': 'user'})
     else:
-        return jsonify({"error": "Unable to connect to the database"}), 500
+        return jsonify({'status': 'error', 'message': 'Invalid credentials or user is blocked'}), 401
 
 
-@app.route('/requests', methods=['POST'])
+@app.route('/queries', methods=['GET'])
+def get_queries():
+    conn = connection
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM requests')
+    rows = cursor.fetchall()
+
+    requests = []
+    for row in rows:
+        requests.append({
+            'id': row.id,
+            'status': row.status,
+            'description': row.description,
+            'activity': row.activity
+        })
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(requests)
+
+
+@app.route('/create_request', methods=['POST'])
 def create_request():
-    conn = get_db_connection()
-    if conn:
-        new_request = request.json
-        sql = f"INSERT INTO requests (id, status, description, activity) VALUES ('{new_request['id']}', '{new_request['status']}', '{new_request['description']}', '{new_request['activity']}')"
-        ibm_db.exec_immediate(conn, sql)
-        ibm_db.close(conn)
-        return jsonify(new_request), 201
-    else:
-        return jsonify({"error": "Unable to connect to the database"}), 500
+    data = request.get_json()
+    new_request = (
+        data['id'],
+        data['status'],
+        data['description'],
+        data['activity']
+    )
+
+    conn = connection
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO requests (id, status, description, activity) VALUES (?, ?, ?, ?)', new_request)
+    cursor.close()
+    conn.close()
+
+    return jsonify(data), 201
+
+
+@app.route('/update_query_status', methods=['POST'])
+def update_query_status():
+    data = request.get_json()
+    request_id = data['id']
+    new_status = data['status']
+
+    conn = connection
+    cursor = conn.cursor()
+    cursor.execute('UPDATE requests SET status = ? WHERE id = ?', new_status, request_id)
+    cursor.close()
+    conn.close()
+
+    return '', 204
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
