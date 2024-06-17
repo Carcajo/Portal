@@ -37,11 +37,14 @@ def authenticate_user(username, password):
     query = "SELECT role FROM users WHERE username = ? AND password = ?"
     cursor.execute(query, (username, password))
     user = cursor.fetchone()
+    user_info = parse_user_info(user)
     cursor.close()
-    if user:
-        return user[0]
-    else:
-        return None
+    print()
+    if user_info['status'] == 'active':
+        if username == 'user' and password == 'password' and user_info['Роль'] == 'USER':
+            return 'user'
+        elif username == 'admin' and password == 'password' and user_info['Роль'] == 'ADMIN':
+            return 'admin'
 
 
 @app.route('/')
