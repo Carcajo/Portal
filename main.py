@@ -47,18 +47,15 @@ def parse_user_info(data):
   
 def authenticate_user(username, password):
     cursor = connection.cursor()
-    query = "SELECT role FROM users WHERE username = ? AND password = ?"
+    query = "SELECT role, status FROM users WHERE username = ? AND password = ?"
     cursor.execute(query, (username, password))
-    user = cursor.fetchone()
-    user_info = parse_user_info(user)
+    user = cursor.fetchall()
     cursor.close()
-    print()
-    if user_info['status'] == 'active':
-        if username == 'user' and password == 'password' and user_info['Роль'] == 'USER':
-            return 'user'
-        elif username == 'admin' and password == 'password' and user_info['Роль'] == 'ADMIN':
-            return 'admin'
 
+    if user:
+        user_info = parse_user_info(user)
+        return user_info  
+    return None
 
 @app.route('/')
 def index():
@@ -74,14 +71,20 @@ def login():
     if not username or not password:
         return jsonify({'status': 'error', 'message': 'Missing username or password'}), 400
 
-    role = authenticate_user(username, password)
+    user_info = authenticate_user(username, password)
 
-    if role == 'user':
-        return jsonify({'status': 'success', 'role': 'user'})
-    elif role == 'admin':
-        return jsonify({'status': 'success', 'role': 'admin'})
+    if user_info:
+        if user_info['status'] == 'active':
+            if username == 'user' and password == 'password' and user_info['role'] == 'USER':
+                return jsonify({'status': 'success', 'role': 'user'})
+            elif username == 'admin' and password == 'password' and user_info['role'] == 'ADMIN':
+                return jsonify({'status': 'success', 'role': 'admin'})
+            else:
+                return jsonify({'status': 'error', 'message': 'Invalid credentials'}), 401
+        else:
+            return jsonify({'status': 'error', 'message': 'User is blocked'}), 401
     else:
-        return jsonify({'status': 'error', 'message': 'Invalid credentials or user is blocked'}), 401
+        return jsonify({'status': 'error', 'message': 'Invalid credentials'}), 401
 
 @app.route('/queries', methods=['GET'])
 def get_queries():
