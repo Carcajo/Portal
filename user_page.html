@@ -12,37 +12,74 @@
     <img src="../static/images/logo.png" class="logo" alt="Логотип">
   </header>
   <main>
-    <div id="modal" class="modal">
+   <div id="modal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
     <h2>Информация о запросе</h2>
     <p><strong>ID запроса:</strong> <span id="modalRequestId"></span></p>
     <p><strong>Статус:</strong> <span id="modalRequestStatus"></span></p>
     <p><strong>Описание:</strong> <span id="modalRequestDescription"></span></p>
+    <p><strong>Комментарий:</strong> <span id="modalRequestComment"></span></p>
     <p><strong>Активность:</strong> <span id="modalRequestActivity"></span></p>
-    <p><strong>SQL запрос:</strong></p>
-    <pre id="modalRequestSQL"></pre>
+    <p><strong>Пользователь:</strong> <span id="modalRequestUser"></span></p>
+    <p><strong>Дата создания:</strong> <span id="modalRequestDateCreated"></span></p>
+    <p><strong>Последняя активность:</strong> <span id="modalRequestLastActivity"></span></p>
+    <p><strong>Ревьюер:</strong> <span id="modalRequestReviewUser"></span></p>
+    <p><strong>SQL Запрос:</strong> <span id="modalRequestRequest"></span></p>
+    <pre><code id="modalRequestSQL"></code></pre>
   </div>
-      </div>
+</div>
 
-  <div id="runModal" class="runmodal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Результаты выполнения запроса</h2>
-    <p><strong>ID запроса:</strong> <span id="runModalRequestId"></span></p>
-    <p><strong>Описание:</strong> <span id="runModalDescription"></span></p>
-    <p><strong>Результаты выполнения:</strong><span>Что-то есть</span></p>
-    <button id="downloadCSV">Скачать CSV</button>
-  </div>
-</div>
-</div>
+
+    <div id="createRequestModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Создать новый запрос</h2>
+        <form id="createRequestForm">
+          <label for="user">Пользователь:</label>
+          <p id="user">Текущий пользователь</p>
+          <label for="id">ID:</label>
+          <p id="id"></p>
+          <label for="date_created">Дата создания:</label>
+          <p id="date_created"></p>
+          <label for="last_activity">Последняя активность:</label>
+          <p id="last_activity"></p>
+          <label for="status">Статус:</label>
+          <p id="status">in review</p>
+          <label for="review_user">Ревьюер:</label>
+          <p id="review_user">Ревьюер</p>
+          <label for="description">Описание:</label>
+          <input type="text" id="description" name="description" required>
+          <label for="comment">Комментарий:</label>
+          <input type="text" id="comment" name="comment" required>
+          <label for="request">Запрос:</label>
+          <textarea id="request" name="request" required></textarea>
+          <button type="submit">Создать</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="runModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Результаты выполнения запроса</h2>
+        <p><strong>ID запроса:</strong> <span id="runModalRequestId"></span></p>
+        <p><strong>Описание:</strong> <span id="runModalDescription"></span></p>
+        <p><strong>Результаты выполнения:</strong><span>Что-то есть</span></p>
+        <button id="downloadCSV">Скачать CSV</button>
+      </div>
+    </div>
+
     <table>
       <thead>
         <tr>
           <th id="idHeader">ID запроса</th>
           <th id="statusHeader">Статус</th>
           <th id="descriptionHeader">Описание</th>
+          <th>Комментарий</th>
+          <th>Запрос</th>
           <th id="activityHeader">Активность</th>
+          <th>Действия</th>
           <th></th>
           <th></th>
         </tr>
