@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Все запросы</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin_page2.css') }}">
+  <link rel="stylesheet" href="../static/styles/admin_page2.css">
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 </head>
 <body>
   <header>
     <h1>Все запросы</h1>
-    <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип">
+    <img src="../static/images/logo.png" class="logo" alt="Логотип">
   </header>
   <main>
     <div id="modal" class="modal">
@@ -82,6 +82,6 @@
     </div>
     <button class="create" id="createRequest">Создать</button>
   </main>
-  <script src="{{ url_for('static', filename='js/admin_page_test.js') }}"></script>
+  <script src="../static/js/admin_page_test.js"></script>
 </body>
-</html> 
+</html>
