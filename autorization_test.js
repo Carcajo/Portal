@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM fully loaded and parsed');
 
+  let currentUser = ''
+
   const loginForm = document.getElementById('login-form');
   if (!loginForm) {
     console.error('Login form not found');
@@ -34,6 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const result = await response.json();
 
     if (result.status === 'success') {
+        currentUser = result.username;
+###################        document.cookie = `username=${currentUser}; path=/;`;
+
       if (result.role === 'admin') {
         window.location.href = 'admin_page.html';
       } else if (result.role === 'user') {
