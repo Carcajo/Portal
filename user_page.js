@@ -1,3 +1,18 @@
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([.$?*|{}()[]\/+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const username = getCookie('username');
+
+  const userFields = document.querySelectorAll('.user-field');
+  userFields.forEach(field => {
+    field.textContent = username;
+  });
+
 document.addEventListener('DOMContentLoaded', function() {
   const idHeader = document.getElementById('idHeader');
   const statusHeader = document.getElementById('statusHeader');
@@ -155,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const newRequest = {
       id: document.getElementById('id').textContent,
-      user: 'Текущий пользователь',
+      user: currentUser,
       date_created: document.getElementById('date_created').textContent,
       last_activity: document.getElementById('last_activity').textContent,
       status: 'in review',
