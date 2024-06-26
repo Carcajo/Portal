@@ -13,41 +13,40 @@
   </header>
   <main>
    <div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Информация о запросе</h2>
-    <p><strong>ID запроса:</strong> <span id="modalRequestId"></span></p>
-    <p><strong>Статус:</strong> <span id="modalRequestStatus"></span></p>
-    <p><strong>Описание:</strong> <span id="modalRequestDescription"></span></p>
-    <p><strong>Комментарий:</strong> <span id="modalRequestComment"></span></p>
-    <p><strong>Активность:</strong> <span id="modalRequestActivity"></span></p>
-    ############<p><strong>Пользователь:</strong><span class="user-field" id="modalRequestUser"></span></p>
-    <p><strong>Дата создания:</strong> <span id="modalRequestDateCreated"></span></p>
-    <p><strong>Последняя активность:</strong> <span id="modalRequestLastActivity"></span></p>
-    <p><strong>Ревьюер:</strong> <span id="modalRequestReviewUser"></span></p>
-    <p><strong>SQL Запрос:</strong> <span id="modalRequestRequest"></span></p>
-    <pre><code id="modalRequestSQL"></code></pre>
-  </div>
-</div>
-
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Информация о запросе</h2>
+        <p><strong>ID запроса:</strong> <span id="modalRequestId"></span></p>
+        <p><strong>Статус:</strong> <span id="modalRequestStatus"></span></p>
+        <p><strong>Описание:</strong> <span id="modalRequestDescription"></span></p>
+        <p><strong>Комментарий:</strong> <span id="modalRequestComment"></span></p>
+        <p><strong>Активность:</strong> <span id="modalRequestActivity"></span></p>
+        <p><strong>Пользователь:</strong><span class="user-field" id="modalRequestUser"></span></p>
+        <p><strong>Дата создания:</strong> <span id="modalRequestDateCreated"></span></p>
+        <p><strong>Последняя активность:</strong> <span id="modalRequestLastActivity"></span></p>
+        <p><strong>Ревьюер:</strong> <span id="modalRequestReviewUser"></span></p>
+        <p><strong>SQL Запрос:</strong> <span id="modalRequestRequest"></span></p>
+        <pre><code id="modalRequestSQL"></code></pre>
+      </div>
+    </div>
 
     <div id="createRequestModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Создать новый запрос</h2>
         <form id="createRequestForm">
-  ####################        <label for="createRequestUser">Пользователь:</label>
-   #####################         <span class="user-field" id="createRequestUser"></span><br>
+          <label for="user">Пользователь:</label>
+          <p id="username"></p>
           <label for="id">ID:</label>
           <p id="id"></p>
           <label for="date_created">Дата создания:</label>
           <p id="date_created"></p>
-          <label for="last_activity">Последняя активность:</label>
-          <p id="last_activity"></p>
+          <label for="activity">Последняя активность:</label>
+          <p id="activity"></p>
           <label for="status">Статус:</label>
           <p id="status">in review</p>
           <label for="review_user">Ревьюер:</label>
-          <p id="review_user">Ревьюер</p>
+          <p id="review_user"></p>
           <label for="description">Описание:</label>
           <input type="text" id="description" name="description" required>
           <label for="comment">Комментарий:</label>
@@ -70,7 +69,7 @@
       </div>
     </div>
 
-    <table>
+    <table id="requestTable">
       <thead>
         <tr>
           <th id="idHeader">ID запроса</th>
@@ -84,16 +83,6 @@
           <th></th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>ABC123456</td>
-          <td class="status">in review</td>
-          <td>Запрос остатков по пакетам</td>
-          <td>2024-04-04</td>
-          <td><button class="info">Инфо</button></td>
-          <td><button class="launch">Запуск</button></td>
-        </tr>
-      </tbody>
     </table>
     <div class="pagination">
       <button id="prevPage">&lt;</button>
