@@ -19,9 +19,14 @@
         <p><strong>ID запроса:</strong> <span id="modalRequestId"></span></p>
         <p><strong>Статус:</strong> <span id="modalRequestStatus"></span></p>
         <p><strong>Описание:</strong> <span id="modalRequestDescription"></span></p>
+        <p><strong>Комментарий:</strong> <span id="modalRequestComment"></span></p>
         <p><strong>Активность:</strong> <span id="modalRequestActivity"></span></p>
-        <p><strong>SQL запрос:</strong></p>
-        <pre id="modalRequestSQL"></pre>
+        <p><strong>Пользователь:</strong><span class="user-field" id="modalRequestUser"></span></p>
+        <p><strong>Дата создания:</strong> <span id="modalRequestDateCreated"></span></p>
+        <p><strong>Последняя активность:</strong> <span id="modalRequestLastActivity"></span></p>
+        <p><strong>Ревьюер:</strong> <span id="modalRequestReviewUser"></span></p>
+        <p><strong>SQL Запрос:</strong> <span id="reviewRequestRequest"></span></p>
+        <pre><code id="modalRequestSQL"></code></pre>
       </div>
     </div>
 
@@ -42,10 +47,12 @@
         <h2>Обзор запроса</h2>
         <p><strong>ID запроса:</strong> <span id="reviewRequestId"></span></p>
         <p><strong>Статус:</strong> <span id="reviewRequestStatus"></span></p>
-        <p><strong>Дата создания:</strong> <span id="reviewRequestDate"></span></p>
-        <p><strong>ФИО:</strong> <span id="reviewRequestName"></span></p>
-        <p><strong>Запрос:</strong> <span id="reviewRequestQuery"></span></p>
+        <p><strong>Описание:</strong> <span id="reviewRequestDescription"></span></p>
         <p><strong>Комментарий:</strong> <span id="reviewRequestComment"></span></p>
+        <p><strong>Активность:</strong> <span id="reviewRequestActivity"></span></p>
+        <p><strong>Пользователь:</strong><span class="user-field" id="reviewRequestUser"></span></p>
+        <p><strong>SQL Запрос:</strong> <span id="modalRequestRequest"></span></p>
+        <pre><code id="reviewRequestSQL"></code></pre>
         <button class="approve">Разрешить</button>
         <button class="reject">Запретить</button>
       </div>
